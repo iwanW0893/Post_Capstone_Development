@@ -86,7 +86,3 @@ b['resigned_on']
 b['date_of_birth']
 b['appointed_on']
 b['address']
-
-
-s & h construction & maintenance
-concept trading & consultancy
