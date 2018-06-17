@@ -103,12 +103,12 @@ for co_no in numbers:
     try:
         officers =pd.concat([officers, pd.Series(b['appointed_on'], index=['appointed'])], axis=1)
         director_data.append(officers)
-    except:officers=officers.assign(appointed=np.nan)
+    except:officers =pd.concat([officers, pd.Series(np.nan, index=['appointed'])], axis=1)
     director_data.append(officers)
     try:
         officers =pd.concat([officers, pd.Series(b['resigned_on'], index=['resigned'])], axis=1)
         director_data.append(officers)
-    except:officers=officers.assign(resigned=np.nan)
+    except:officers =pd.concat([officers, pd.Series(np.nan, index=['resigned'])], axis=1)
     director_data.append(officers)
 
 all_officers=pd.DataFrame(director_data)
