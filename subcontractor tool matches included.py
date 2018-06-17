@@ -72,6 +72,7 @@ df_cd=pd.DataFrame(company_data)
 
 numbers = df_cd['company_number']
 
+import numpy as np
 director_data= []
 missed_directors= []
 for co_no in numbers:
@@ -96,18 +97,22 @@ for co_no in numbers:
         resigned_on WANT
         '''
         officers = b[['name', 'officer_role','date_of_birth', 'address']]
-        try:
-            officers=officers.append(pd.Series(b['resigned_on'].loc[0], index=['resigned_on']))
-        except:pass
-        try:
-            officers=officers.append(pd.Series(b['appointed_on'].loc[0], index=['appointed_on']))
-        except:pass
-        officers=officers.append(pd.Series(co_no, index=['company_number']))
+        officers=pd.concat([officers, pd.Series(co_no, index=['company_number'])], axis=1)
         director_data.append(officers)
     except Exception as e: print(e, co_no), missed_subs.append(co_no)
+    try:
+        officers =pd.concat([officers, pd.Series(b['appointed_on'], index=['appointed'])], axis=1)
+        director_data.append(officers)
+    except:officers=officers.assign(appointed=np.nan)
+    director_data.append(officers)
+    try:
+        officers =pd.concat([officers, pd.Series(b['resigned_on'], index=['resigned'])], axis=1)
+        director_data.append(officers)
+    except:officers=officers.assign(resigned=np.nan)
+    director_data.append(officers)
 
 all_officers=pd.DataFrame(director_data)
-
+test=pd.concat(director_data)
 company_house_sub_data=df_cd.join(all_officers, lsuffix='company_number', rsuffix='company_number')
 
 '''resolved issue with similar function, variable and loc needed to be declared a string. Made a function with the loops originally.
