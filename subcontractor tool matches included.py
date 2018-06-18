@@ -96,10 +96,33 @@ for co_no in numbers:
         officer_role	WANT
         resigned_on WANT
         '''
-        officers = b[['name', 'officer_role','date_of_birth', 'address']]
-        officers=pd.concat([officers, pd.Series(co_no, index=['company_number'])], axis=1)
+        officers = b[['name', 'officer_role','date_of_birth', 'address', 'appointed_on', 'resigned_on']]
+        officers= officers.assign(company_number=co_no)
         director_data.append(officers)
-    except Exception as e: print(e, co_no), missed_subs.append(co_no)
+    except: 
+        try:
+            officers = b[['name', 'officer_role','date_of_birth', 'address', 'appointed_on']]
+            officers= officers.assign(company_number=co_no)
+            director_data.append(officers)
+        except Exception as e: print(e, co_no), missed_subs.append(co_no)
+
+'''pd.concat([officers, pd.Series(co_no, index=['company_number'])], axis=1)
+
+.insert(0, 'company_number',co_no)
+
+'''
+all_officers=pd.concat(director_data)
+company_house_sub_data=all_officers.join(df_cd, lsuffix='company_number', rsuffix='company_number')
+
+'''resolved issue with similar function, variable and loc needed to be declared a string. Made a function with the loops originally.
+then removed as it wasn't advantageous anyway doing so. I had a problem with the loop not forming a dataframe, nothing was added.
+'''
+
+'''now i just need to check the levenshulme on matching officers vs client contacts. clients vs subcontractors and drop'''
+
+'''attempt at try statement on two missing data
+
+
     try:
         officers =pd.concat([officers, pd.Series(b['appointed_on'], index=['appointed'])], axis=1)
         director_data.append(officers)
@@ -110,13 +133,5 @@ for co_no in numbers:
         director_data.append(officers)
     except:officers =pd.concat([officers, pd.Series(np.nan, index=['resigned'])], axis=1)
     director_data.append(officers)
-
-all_officers=pd.DataFrame(director_data)
-test=pd.concat(director_data)
-company_house_sub_data=df_cd.join(all_officers, lsuffix='company_number', rsuffix='company_number')
-
-'''resolved issue with similar function, variable and loc needed to be declared a string. Made a function with the loops originally.
-then removed as it wasn't advantageous anyway doing so. I had a problem with the loop not forming a dataframe, nothing was added.
-'''
-
-'''now i just need to check the levenshulme on matching officers vs client contacts. clients vs subcontractors and drop'''
+    
+    '''
